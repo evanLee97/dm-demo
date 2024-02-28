@@ -1,24 +1,24 @@
 <template>
   <div class="login-container">
-    <el-form class="login-form">
+    <el-form class="login-form" :model="loginForm" :rules="loginRules">
       <div class="title-container">
         <h3 class="title">用户登陆</h3>
       </div>
       <!-- username -->
-      <el-form-item>
+      <el-form-item prop="username">
         <span class="svg-container">
-          <svg-icon icon="usr"></svg-icon>
+          <svg-icon icon="user"></svg-icon>
         </span>
-        <el-input placeholder="username" name="username" type="text"></el-input>
+        <el-input placeholder="username" name="username" type="text" v-model="loginForm.username"></el-input>
       </el-form-item>
       <!-- password -->
-      <el-form-item>
+      <el-form-item prop="password">
         <span class="svg-container">
           <svg-icon icon="password"></svg-icon>
         </span>
-        <el-input placeholder="password" name="password"></el-input>
-        <span class="show-pwd">
-          <svg-icon icon="eye"></svg-icon>
+        <el-input placeholder="password" name="password" v-model="loginForm.password" :type="passwordType"></el-input>
+        <span class="show-pwd" @click="onChangePwdType">
+          <svg-icon :icon="passwordType === 'password' ? 'eye' : 'eye-open'"></svg-icon>
         </span>
       </el-form-item>
 
@@ -32,7 +32,39 @@
 
 <script setup>
 // import { Avatar } from '@element-plus/icons'
-import {} from 'vue'
+import { ref } from 'vue'
+import { validatePassword } from './rules'
+const loginForm = ref({
+  username: 'super-admin',
+  password: '123456'
+})
+const loginRules = ref({
+  username: [
+    {
+      required: true,
+      trigger: 'blur',
+      message: '用户为必填项'
+    }
+  ],
+  password: [
+    {
+      required: true,
+      trigger: 'blur',
+      validator: validatePassword()
+    }
+  ]
+})
+
+// 处理密码框显示
+const passwordType = ref('password')
+// template中绑定的方法 直接使用即可
+const onChangePwdType = () => {
+  if (passwordType.value === 'password') {
+    passwordType.value = 'text'
+  } else {
+    passwordType.value = 'password'
+  }
+}
 </script>
 
 <style lang="scss" scoped>
