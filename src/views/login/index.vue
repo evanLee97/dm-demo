@@ -1,6 +1,6 @@
 <template>
   <div class="login-container">
-    <el-form class="login-form" :model="loginForm" :rules="loginRules">
+    <el-form class="login-form" ref="loginFormRef" :model="loginForm" :rules="loginRules">
       <div class="title-container">
         <h3 class="title">用户登陆</h3>
       </div>
@@ -9,7 +9,8 @@
         <span class="svg-container">
           <svg-icon icon="user"></svg-icon>
         </span>
-        <el-input placeholder="username" name="username" type="text" v-model="loginForm.username"></el-input>
+        <el-input placeholder="username" name="username" type="text" v-model="loginForm.username">
+        </el-input>
       </el-form-item>
       <!-- password -->
       <el-form-item prop="password">
@@ -23,7 +24,7 @@
       </el-form-item>
 
       <!-- button -->
-      <el-button type="primary" style="width: 100%; margin-bottom: 20px;">
+      <el-button type="primary" style="width: 100%; margin-bottom: 20px;" @click="handleLogin" autofocus:loading="loading">
         登陆
       </el-button>
     </el-form>
@@ -34,6 +35,7 @@
 // import { Avatar } from '@element-plus/icons'
 import { ref } from 'vue'
 import { validatePassword } from './rules'
+import { useStore } from 'vuex'
 const loginForm = ref({
   username: 'super-admin',
   password: '123456'
@@ -64,6 +66,27 @@ const onChangePwdType = () => {
   } else {
     passwordType.value = 'password'
   }
+}
+
+// 处理登陆
+const loading = ref(false)
+const store = useStore()
+const loginFormRef = ref(null)
+const handleLogin = () => {
+  // 1. 表单校验
+  loginFormRef.value.validate(valid => {
+    if (!valid) return
+    // 2. 出发登陆
+    loading.value = true
+    store.dispatch('user/login', loginForm.value)
+      .then(() => {
+        loading.value = false
+      })
+      .catch(err => {
+        console.log(err)
+        loading.value = false
+      })
+  })
 }
 </script>
 
