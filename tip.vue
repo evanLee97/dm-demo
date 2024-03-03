@@ -59,3 +59,4 @@ export default {
   },
   // 其他日期的工作时间
 }
+npm i  —save-dev svg-sprite-loader@6.0.9
