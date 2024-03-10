@@ -5,8 +5,10 @@ function resolve(dir) {
 module.exports = {
   devServer: {
     proxy:{
-      [ process.env.VUE_APP_BASE_API ]:{
-      target:'process.env.VUE_APP_BASE_URL',
+      // [ process.env.VUE_APP_BASE_URL ]:{
+      '^/api':{
+      // target:'process.env.VUE_APP_BASE_URL',
+      target:'http://127.0.0.1:8000',
       changeOrigin: true, 
       pathRewrite:{'^/api':''}
     }

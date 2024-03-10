@@ -1,13 +1,29 @@
 import axios from 'axios'
+import { ElMessage } from 'element-plus'
 // import store from '@/store'
-// import { ElMessage } from 'element-plus'
 
 const service = axios.create({
-  baseURL: process.env.VUE_APP_BASE_URL,
-  // baseURL: 'http://127.0.0.1:8000/',
+  baseURL: process.env.VUE_APP_BASE_API,
+  // baseURL: '/api',
   timeout: 5000
 })
 
+// 响应拦截器
+service.interceptors.response.use(
+  response => {
+    const { seccess, message, data } = response.data
+    if (seccess) {
+      return data
+    } else {
+      ElMessage.error(message)
+      return Promise.reject(new Error(message))
+    }
+  },
+  error => {
+    ElMessage.error(error.message)
+    return Promise.reject(error)
+  }
+)
 // 请求拦截器
 // service.interceptors.request.use(
 //   config => {
